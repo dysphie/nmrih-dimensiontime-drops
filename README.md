@@ -4,7 +4,7 @@ Tossable cash and perks for [Dimension Time](https://steamcommunity.com/sharedfi
 ![image](https://user-images.githubusercontent.com/11559683/126886527-0de25f5f-83d2-4781-8f63-4a87c104bb33.png)
 
 ### Features
-- Perks and cash can be dropped and picked up by other players
+- Earned perks and cash can be dropped and picked up by other players
 
   - Type `/dim` to access the drop menu
 
