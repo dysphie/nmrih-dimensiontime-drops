@@ -29,7 +29,7 @@ public Plugin myinfo = {
     name        = "nmo_dimension_time Droppable Cash/Perks",
     author      = "Dysphie",
     description = "Allows cash and perks to be unequipped and dropped",
-    version     = "0.1.0",
+    version     = "0.2.2",
     url         = ""
 };
 
@@ -68,7 +68,7 @@ public void OnPluginStart()
 
 	RegConsoleCmd("sm_dim", Command_Dimension);
 
-	// fixme: autoexecconfig
+	AutoExecConfig();
 }
 
 public Action Command_DropAll(int client, int args)
@@ -94,19 +94,20 @@ void DropAll(int client, bool preserved=false)
 {
 	// Point upgrades are preserved thru respawns
 	// So don't get rid of them unless specified
-	if (preserved)
+
+	int id = GetEconomyID(client);
+	if (id != INVALID_ECONOMY_ID)
 	{
-		int id = GetEconomyID(client);
-		if (id != INVALID_ECONOMY_ID)
+		if (preserved)
 		{
 			int ppLvl = PointCapLevel_Get(id)
 			for (int i; i < ppLvl; i++)
 				DropPointsPerk(client, id);
+		}
 
-			int points = GetClientPoints(id);
-			if (points > 0)
-				DropCash(client, id, points);
-		}	
+		int points = GetClientPoints(id);
+		if (points > 0)
+			DropCash(client, id, points);
 	}
 
 	int hpLvl = MaxHealthLevel_Get(client);
@@ -131,6 +132,9 @@ int MenuHandler_DropPoints(Menu menu, MenuAction menuaction, int param1, int par
 
 	else if (menuaction == MenuAction_Select)
 	{
+		if (!IsPlayerAlive(param1))
+			return 0;
+
 		int id = GetEconomyID(param1);
 		if (id != INVALID_ECONOMY_ID)
 		{
@@ -220,6 +224,9 @@ int MenuHandler_Home(Menu menu, MenuAction menuaction, int param1, int param2)
 
 	else if (menuaction == MenuAction_Select)
 	{
+		if (!IsPlayerAlive(param1))
+			return 0;
+
 		char selection[8];
 		menu.GetItem(param2, selection, sizeof(selection));
 
@@ -229,6 +236,7 @@ int MenuHandler_Home(Menu menu, MenuAction menuaction, int param1, int param2)
 		else if (StrEqual(selection, "du"))
 			ShowMenu_DropUpgrade(param1);
 	}
+	return 0;
 }
 
 void ShowMenu_DropPoints(int client)
@@ -277,6 +285,9 @@ int MenuHandler_DropUpgrade(Menu menu, MenuAction menuaction, int param1, int pa
 
 	else if (menuaction == MenuAction_Select)
 	{
+		if (!IsPlayerAlive(param1))
+			return 0;
+
 		char selection[2];
 		menu.GetItem(param2, selection, sizeof(selection));
 		switch (selection[0])
@@ -317,13 +328,17 @@ int MenuHandler_DropUpgrade(Menu menu, MenuAction menuaction, int param1, int pa
 		// Redraw the menu
 		ShowMenu_DropUpgrade(param1);
 	}
+
+	return 0;
 }
 
-public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
+public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	if (client)
 		DropAll(client);
+
+	return Plugin_Continue;
 }
 
 public void OnClientDisconnect(int client)
@@ -340,12 +355,8 @@ public Action Command_Dimension(int client, int args)
 		return Plugin_Handled;
 	}
 
-	if (!client)
+	if (!client || !IsPlayerAlive(client))
 		return Plugin_Handled;
-	
-	char mapName[32];
-	GetCurrentMap(mapName, sizeof(mapName));
-
 
 	ShowMenu_Home(client);
 	return Plugin_Handled;
@@ -400,7 +411,7 @@ public void OnMapStart()
 	for (int i; i < sizeof(SND_PICKUP); i++)
 		PrecacheSound(SND_PICKUP[i]);
 
-	if (lateloaded)
+	if (validMap && lateloaded)
 		ParseMapEntities();
 }
 
