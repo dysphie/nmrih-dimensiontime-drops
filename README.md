@@ -16,8 +16,6 @@ Tossable cash and perks for [Dimension Time](https://steamcommunity.com/sharedfi
 
   ![image](https://user-images.githubusercontent.com/11559683/126886569-2c832052-c938-42ca-9b8c-63a57b6e8a60.png)
 
-- Menu can be fully translated
-
 ### Planned
 - Direct item transfers.
 
@@ -42,3 +40,7 @@ Requires ADMFLAG_CHEATS
   - See a client's owned perks and cash.
 - `sm_dim_giveall`
   - Spawn all perks and cash required to max out your character.
+
+
+### Translations
+- Plugin can be fully translated by editing `translations/dimension-time-drops.phrases.txt`. English and Spanish translations are included by default.
