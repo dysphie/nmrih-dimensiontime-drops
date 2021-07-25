@@ -69,8 +69,9 @@
 
 	"Increased Points"
 	{
-		"en"	"5+ Point cap"
-		"es"	"+5 Puntos máximos"
+		"#format" "{1:d}"
+		"en"	"5+ Point cap ({1}X)"
+		"es"	"+5 Puntos máximos ({1}X)"
 	}
 
 	"Inventory Actions"
