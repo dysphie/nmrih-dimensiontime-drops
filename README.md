@@ -1,4 +1,4 @@
-# nmrih-dimensiontime-drops
+# [NMRiH] Dimension Time Drops
 Tossable cash and perks for [Dimension Time](https://steamcommunity.com/sharedfiles/filedetails/?id=2489653968)
 
 ![image](https://user-images.githubusercontent.com/11559683/126886527-0de25f5f-83d2-4781-8f63-4a87c104bb33.png)
