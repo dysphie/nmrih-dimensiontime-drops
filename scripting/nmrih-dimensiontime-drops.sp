@@ -29,7 +29,7 @@ public Plugin myinfo = {
     name        = "Dimension Time Drops",
     author      = "Dysphie",
     description = "Allows cash and perks to be unequipped and dropped in nmo_dimension_time",
-    version     = "0.2.3",
+    version     = "0.2.4",
     url         = ""
 };
 
@@ -343,7 +343,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 
 public void OnClientDisconnect(int client)
 {
-	if (IsPlayerAlive(client))
+	if (IsClientInGame(client) && IsPlayerAlive(client))
 		DropAll(client);
 }
 
