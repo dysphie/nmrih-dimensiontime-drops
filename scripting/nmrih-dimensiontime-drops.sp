@@ -29,7 +29,7 @@ public Plugin myinfo = {
     name        = "Dimension Time Drops",
     author      = "Dysphie",
     description = "Allows cash and perks to be unequipped and dropped in nmo_dimension_time",
-    version     = "0.2.2",
+    version     = "0.2.3",
     url         = ""
 };
 
@@ -417,7 +417,8 @@ public void OnMapStart()
 
 public void Event_ResetMap(Event event, const char[] name, bool dontBroadcast)
 {
-	RequestFrame(ParseMapEntities);
+	if (validMap)
+		RequestFrame(ParseMapEntities);
 }
 
 /*
