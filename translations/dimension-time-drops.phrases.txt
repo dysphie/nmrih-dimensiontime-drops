@@ -27,7 +27,7 @@
 	"Points No Longer Owned"
 	{
 		"en"	"You no longer own these points"
-		"en"	"Ya no posees estos puntos"
+		"es"	"Ya no posees estos puntos"
 	}
 
 	"sm_dim_dropall Usage"
