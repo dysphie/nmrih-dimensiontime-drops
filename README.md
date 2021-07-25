@@ -22,6 +22,8 @@ Tossable cash and perks for [Dimension Time](https://steamcommunity.com/sharedfi
 ### ConVars
 - `dim_item_despawn_time` (Default: `50`)
   - Dropped items will despawn after this many seconds.
+  
+  A config file is automatically generated in `cfg/sourcemod`.
 
 ### Commands
 
