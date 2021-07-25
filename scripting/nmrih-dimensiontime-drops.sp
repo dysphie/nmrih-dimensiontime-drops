@@ -26,9 +26,9 @@ char SND_PICKUP[][] = {
 #define IN_UNLOAD 0x400000
 
 public Plugin myinfo = {
-    name        = "nmo_dimension_time Droppable Cash/Perks",
+    name        = "Dimension Time Drops",
     author      = "Dysphie",
-    description = "Allows cash and perks to be unequipped and dropped",
+    description = "Allows cash and perks to be unequipped and dropped in nmo_dimension_time",
     version     = "0.2.2",
     url         = ""
 };
