@@ -16,6 +16,8 @@ Tossable cash and perks for [Dimension Time](https://steamcommunity.com/sharedfi
 
   ![image](https://user-images.githubusercontent.com/11559683/126886569-2c832052-c938-42ca-9b8c-63a57b6e8a60.png)
 
+- Menu can be fully translated
+
 ### Planned
 - Direct item transfers.
 
