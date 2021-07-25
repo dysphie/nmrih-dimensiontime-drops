@@ -33,6 +33,9 @@ Tossable cash and perks for [Dimension Time](https://steamcommunity.com/sharedfi
   - Access the drop menu. 
 
 ### Admin/Debug Commands
+
+Requires ADMFLAG_CHEATS
+
 - `sm_dim_dropall <#userid|name>`
   - Force a client to drop all of their cash/perks.
 - `sm_dim_stats <#userid|name>`  
