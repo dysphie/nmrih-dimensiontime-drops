@@ -157,6 +157,7 @@ void ShowMenu_DropUpgrade(int client)
 
 	char fmt[2048];
 
+	menu.SetTitle("%T", "Drop Upgrade", client);
 	int id = GetEconomyID(client);
 	if (id != INVALID_ECONOMY_ID)
 	{
@@ -236,6 +237,7 @@ void ShowMenu_DropPoints(int client)
 	int OPTIONS[] = {1, 2, 3, 5, 10, 15, 30};
 
 	Menu menu = new Menu(MenuHandler_DropPoints);
+	menu.SetTitle("%T", "Drop Points", client);
 
 	char item[5], itemDisplay[64];
 
