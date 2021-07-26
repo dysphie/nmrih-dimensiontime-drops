@@ -29,7 +29,7 @@ public Plugin myinfo = {
     name        = "Dimension Time Drops",
     author      = "Dysphie",
     description = "Allows cash and perks to be unequipped and dropped in nmo_dimension_time",
-    version     = "0.2.4",
+    version     = "0.2.5",
     url         = ""
 };
 
@@ -73,6 +73,12 @@ public void OnPluginStart()
 
 public Action Command_DropAll(int client, int args)
 {
+	if (!validMap)
+	{
+		ReplyToCommand(client, "%t", "Wrong Map");
+		return Plugin_Handled;
+	}
+
 	if (args < 1)
 	{
 		ReplyToCommand(client, "%t", "sm_dim_dropall Usage");
@@ -524,6 +530,9 @@ int ClientPerformThrow(int client, int item)
  */
 public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float vel[3], const float angles[3], int weapon, int subtype, int cmdnum, int tickcount, int seed, const int mouse[2])
 {
+	if (!validMap)
+		return;
+
 	static float nextDropThink[MAXPLAYERS+1];
 
 	if (buttons & IN_ALT2)
