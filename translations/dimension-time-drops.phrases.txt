@@ -1,5 +1,11 @@
 "Phrases"
 {
+	"Must Be Alive"
+	{
+		"en"	"You must be alive to use this"
+		"es"	"No disponible para espectadores"
+	}
+
 	"No Points"
 	{
 		"en"	"No points"

@@ -29,7 +29,7 @@ public Plugin myinfo = {
     name        = "Dimension Time Drops",
     author      = "Dysphie",
     description = "Allows cash and perks to be unequipped and dropped in nmo_dimension_time",
-    version     = "0.2.5",
+    version     = "0.2.6",
     url         = ""
 };
 
@@ -139,7 +139,10 @@ int MenuHandler_DropPoints(Menu menu, MenuAction menuaction, int param1, int par
 	else if (menuaction == MenuAction_Select)
 	{
 		if (!IsPlayerAlive(param1))
+		{
+			PrintToChat(param1, "%t", "Must Be Alive");
 			return 0;
+		}
 
 		int id = GetEconomyID(param1);
 		if (id != INVALID_ECONOMY_ID)
@@ -156,7 +159,7 @@ int MenuHandler_DropPoints(Menu menu, MenuAction menuaction, int param1, int par
 			}
 		}
 
-		ReplyToCommand(param1, "%t", "Points No Longer Owned");
+		PrintToChat(param1, "%t", "Points No Longer Owned");
 	}
 	return 0;
 }
@@ -231,7 +234,10 @@ int MenuHandler_Home(Menu menu, MenuAction menuaction, int param1, int param2)
 	else if (menuaction == MenuAction_Select)
 	{
 		if (!IsPlayerAlive(param1))
+		{
+			ReplyToCommand(param1, "%t", "Must Be Alive");
 			return 0;
+		}
 
 		char selection[8];
 		menu.GetItem(param2, selection, sizeof(selection));
@@ -292,7 +298,10 @@ int MenuHandler_DropUpgrade(Menu menu, MenuAction menuaction, int param1, int pa
 	else if (menuaction == MenuAction_Select)
 	{
 		if (!IsPlayerAlive(param1))
+		{
+			ReplyToCommand(param1, "%t", "Must Be Alive");
 			return 0;
+		}
 
 		char selection[2];
 		menu.GetItem(param2, selection, sizeof(selection));
@@ -340,29 +349,38 @@ int MenuHandler_DropUpgrade(Menu menu, MenuAction menuaction, int param1, int pa
 
 public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if (client)
-		DropAll(client);
+	if (validMap)
+	{
+		int client = GetClientOfUserId(event.GetInt("userid"));
+		if (client)
+			DropAll(client);	
+	}
 
 	return Plugin_Continue;
 }
 
 public void OnClientDisconnect(int client)
 {
-	if (IsClientInGame(client) && IsPlayerAlive(client))
+	if (validMap && IsClientInGame(client) && IsPlayerAlive(client))
 		DropAll(client);
 }
 
 public Action Command_Dimension(int client, int args)
 {
+	if (!client || !IsClientInGame(client))
+		return Plugin_Handled;
+
 	if (!validMap)
 	{
 		ReplyToCommand(client, "%t", "Wrong Map");
 		return Plugin_Handled;
 	}
 
-	if (!client || !IsPlayerAlive(client))
+	if (!IsPlayerAlive(client))
+	{
+		ReplyToCommand(client, "%t", "Must Be Alive");
 		return Plugin_Handled;
+	}
 
 	ShowMenu_Home(client);
 	return Plugin_Handled;
@@ -390,14 +408,14 @@ public Action Command_Overview(int client, int args)
 	int id = GetEconomyID(target);
 	if (id != INVALID_ECONOMY_ID)
 	{
-		PrintToServer("Points: %d", GetClientPoints(id));
-		PrintToServer("Point upgrades: %d", PointCapLevel_Get(id));
+		ReplyToCommand(client, "Points: %d", GetClientPoints(id));
+		ReplyToCommand(client, "Point upgrades: %d", PointCapLevel_Get(id));
 	}
 
-	PrintToServer("Health: %d", GetClientHealth(target));
-	PrintToServer("Health upgrades: %d", MaxHealthLevel_Get(target));
-	PrintToServer("Armor: %d", GetClientArmor(target));
-	PrintToServer("Boots: %d", ClientHasBoots(target));
+	ReplyToCommand(client, "Health: %d", GetClientHealth(target));
+	ReplyToCommand(client, "Health upgrades: %d", MaxHealthLevel_Get(target));
+	ReplyToCommand(client, "Armor: %d", GetClientArmor(target));
+	ReplyToCommand(client, "Boots: %d", ClientHasBoots(target));
 	return Plugin_Handled;
 }
 
@@ -476,6 +494,9 @@ void ParseMapEntities()
 
 public Action Command_Impulse(int client, int args)
 {
+	if (!client || !IsClientInGame(client))
+		return Plugin_Handled;
+
 	if (!validMap)
 	{
 		ReplyToCommand(client, "%t", "Wrong Map");
@@ -552,6 +573,14 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 			if (id != INVALID_ECONOMY_ID && GetClientPoints(id) > 0)
 				DropCash(client, id, 1);
 		}
+	}
+	else if (buttons & IN_UNLOAD)
+	{
+		char curWeapon[20];
+		GetClientWeapon(client, curWeapon, sizeof(curWeapon));
+
+		if (StrEqual(curWeapon, "me_fists"))
+			ShowMenu_Home(client);
 	}
 }
 
@@ -635,8 +664,11 @@ public Action OnPickup_Cash(int cash, int activator, int caller, UseType type, f
 	if (id == INVALID_ECONOMY_ID)
 		return Plugin_Handled; // Don't allow pick up, makes it easier to spam use
 
-	entData[cash] = IncreaseClientPoints(id, entData[cash]);
+	int remainder = IncreaseClientPoints(id, entData[cash]);
+	if (remainder == entData[cash])
+		return Plugin_Handled;
 
+	entData[cash] = remainder;
 	if (entData[cash] <= 0)
 		RemoveEntity(cash);
 
